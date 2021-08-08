@@ -1,3 +1,8 @@
+image_classifier/cifar-10-batches/
+image_classifier/TRAIN/
+image_classifier/TEST/
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
