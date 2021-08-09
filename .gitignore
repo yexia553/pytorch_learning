@@ -1,6 +1,7 @@
 image_classifier/cifar-10-batches/
 image_classifier/TRAIN/
 image_classifier/TEST/
+image_classifier/log/
 .vscode/
 
 # Byte-compiled / optimized / DLL files

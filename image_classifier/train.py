@@ -9,6 +9,7 @@ import torchvision
 from vggnet import vggNet
 from load_cifar10 import train_loader, test_loader
 import os
+import tensorboardX
 
 
 def tranning():
@@ -29,6 +30,11 @@ def tranning():
     optimizer = torch.optim.Adam(net.parameters(), lr=lr)
     # 动态学习率
     scheduler =  torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.9)
+
+    # 设定tensorboard日志的路径
+    if not os.path.exists('log'):
+        os.mkdir('log')
+    writer = tensorboardX.SummaryWriter('log')
 
     for epoch in range(epochs):
         epoch += 1
@@ -52,7 +58,7 @@ def tranning():
             # print('train step: ', idx)
             # print("loss is: ", loss.item())
 
-            # 计算正确率
+            # 计算每个batch_size的正确率
             _, pred = torch.max(outputs.data, dim=1)
             correct  = pred.eq(labels.data).cpu().sum()
             train_sum_loss += loss.item()
@@ -60,16 +66,20 @@ def tranning():
         train_loss = train_sum_loss * 1.0 / len(train_loader)
         train_correct = train_sum_correct * 100.0 / len(train_loader) / batch_size
         print('epoch: ', epoch, '; train loss : ', train_loss, '; train correct: ', train_correct)
-            # print('step: ', idx, '; mini-batch corrcet : ', 100.0 * correct/batch_size)
 
+        # 添加日志到tensorboard中
+        writer.add_scalar('train loss', train_loss.item(), global_step=epoch)
+        writer.add_scalar('train correct', train_correct, global_step=epoch)
+        
         # 按照每一个epoch保存模型
         # if not os.path.exists('models'):
         #     os.mkdir('models')
         # torch.save(net.state_dict(), 'models/{}.path'.format(epoch))
+        
         # 一个epoch结束后更新学习率
         scheduler.step()
         
-        ## 测试
+        ## 测试 ##
         # 计算每个epoch的损失和正确率
         test_sum_loss = 0
         test_sum_correct = 0
@@ -96,8 +106,12 @@ def tranning():
             test_sum_correct += correct.item()
         test_loss = test_sum_loss * 1.0 /len(test_loader)
         test_correct = test_sum_correct * 100.0 /len(test_loader) / batch_size
-        print('epoch: ', epoch, '; test loss : ', test_loss, '; test correct: ', test_correct)
-
+        # print('epoch: ', epoch, '; test loss : ', test_loss, '; test correct: ', test_correct)
+        
+        # 添加日志到tensorboard中
+        writer.add_scalar('test loss', test_loss.item(), global_step=epoch)
+        writer.add_scalar('test correct', test_correct, global_step=epoch)
+        
 
 def main():
     """
