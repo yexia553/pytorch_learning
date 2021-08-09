@@ -68,7 +68,7 @@ def tranning():
         print('epoch: ', epoch, '; train loss : ', train_loss, '; train correct: ', train_correct)
 
         # 添加日志到tensorboard中
-        writer.add_scalar('train loss', train_loss.item(), global_step=epoch)
+        writer.add_scalar('train loss', train_loss, global_step=epoch)
         writer.add_scalar('train correct', train_correct, global_step=epoch)
         
         # 按照每一个epoch保存模型
@@ -106,10 +106,10 @@ def tranning():
             test_sum_correct += correct.item()
         test_loss = test_sum_loss * 1.0 /len(test_loader)
         test_correct = test_sum_correct * 100.0 /len(test_loader) / batch_size
-        # print('epoch: ', epoch, '; test loss : ', test_loss, '; test correct: ', test_correct)
+        print('epoch: ', epoch, '; test loss : ', test_loss, '; test correct: ', test_correct)
         
         # 添加日志到tensorboard中
-        writer.add_scalar('test loss', test_loss.item(), global_step=epoch)
+        writer.add_scalar('test loss', test_loss, global_step=epoch)
         writer.add_scalar('test correct', test_correct, global_step=epoch)
         
 
