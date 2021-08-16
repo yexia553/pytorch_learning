@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class ResBlock(nn.modules):
+class ResBlock(nn.Module):
     def __init__(self, in_channel, out_channel, stride=1):
         super(ResBlock, self).__init__()
 
@@ -38,7 +38,7 @@ class ResBlock(nn.modules):
         return out
 
 
-class ResNet(nn.modules):
+class ResNet(nn.Module):
     def make_layer(self, block, out_channel, stride, num_block):
         layers_list = list()
         for i in range(num_block):
@@ -72,7 +72,7 @@ class ResNet(nn.modules):
     def forward(self, x):
         out = self.conv1(x)
         out = self.layer1(out)
-        out = self.laye2(out)
+        out = self.layer2(out)
         out = self.layer3(out)
         out = self.layer4(out)
         out = F.avg_pool2d(out, 4)
